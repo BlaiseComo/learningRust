@@ -27,25 +27,8 @@ crate
             take_payment
 */
 
-mod front_of_house {
-    // First submodule
-    pub mod hosting {
-
-        // Parent module and function must both be public to be accessed by other functions such as eat_at_restaurant
-        pub fn add_to_waitlist() {}
-
-        fn seat_at_table() {}
-    }
-
-    // Second submodule
-    mod serving {
-        fn take_order() {}
-
-        fn serve_order() {}
-
-        fn take_payment() {}
-    }
-}
+// Lets the compiler know that it needs to use the file front_of_house.rs
+mod front_of_house;
 
 fn deliver_order() {}
 
@@ -79,15 +62,60 @@ mod back_of_house {
     fn cook_order() {}
 }
 
+// Allows for the use of shortened path specification, as seen under comment 1
+pub use crate::front_of_house::hosting;
+
 pub fn eat_at_restaurant() {
     // Absolute path
-    crate::front_of_house::hosting::add_to_waitlist();
+    //crate::front_of_house::hosting::add_to_waitlist();
 
     // Relative path
-    front_of_house::hosting::add_to_waitlist();
+    //front_of_house::hosting::add_to_waitlist();
+
+    // Shortest way to specify path (1)
+    // Can only be used in functions of the same scope, such as eat_at_restaurant
+    // This statement would not be valid in the back_of_house module
+    hosting::add_to_waitlist();
 
     let mut meal = back_of_house::Breakfast::summer("Rye");
 
     meal.toast = String::from("Wheat");
     println!("I'd like {} toast please", meal.toast);
 }
+
+// Practical use case of idiomatic specification
+/*
+use std::collections::HashMap;
+
+fn main() {
+    let mut map = HashMap::new();
+    map.insert(1, 2);
+}
+*/
+
+/*
+How to specify two types of the same name:
+
+use std::fmt::Result;
+use std::io::Result as IoResult;
+*/
+
+/*
+Adding a pub keyword before the use keyword allows external code to use that path as well,
+if pub use crate::front_of_house::hosting was declared instead of statement 1 then in an external 
+file you could declare restaurant::hosting::add_to_waitlist()
+*/
+
+/*
+External code that is not a part of the standard library must be defined in the cargo.toml file
+*/
+
+/*
+Brings all items from std::collections into scope
+use std::collections*;
+*/
+
+/*
+Single line declaration bringing two seperate modules into scope
+use std::io::{self, Write};
+*/
