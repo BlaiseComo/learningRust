@@ -78,6 +78,47 @@ fn main() {
 
     // HASH MAPS BEGIN
 
-    
+    // HashMap<K, V> stores a mapping of keys of type K to values of type V
+
+    // One way to create a hashmap:
+    use std::collections::HashMap;
+
+    let mut scores = HashMap::new();
+
+    scores.insert(String::from("Blue"), 10);
+    scores.insert(String::from("Yellow"), 50);
+
+    let team_name = String::from("Blue");
+    // Retrieving a value from the hashmap
+    // get returns an option<&V>
+    // Copied changes option<&V> to an option<i32>
+    // unwrap_or sets score to the value that is passed into it if there is no matching key in the hashmap
+    let score = scores.get(&team_name).copied().unwrap_or(0);
+
+    // Iterating over the key value pairs in scores (in an arbitrary order)
+    for (key, value) in &scores {
+        println!("{}: {}", key, value);
+    }
+
+    // If you initialize an owned variable (like String), and use those values as a key or value in a hashmap, they will be moved to that hashmap
+
+    // If there is not a value associated with the key "Yellow", or if there is not a key named "Yellow" at all, then 50 is put as it's value
+    // Or the key "Yellow" is created and 50 is put as the value
+    scores.entry(String::from("Yellow")).or_insert(50);
+
+    // Another use case for hashmaps
+
+    let text = "hello world wonderful world";
+
+    let mut map = HashMap::new();
+
+    for word in text.split_whitespace() {
+        // Stores a mutable reference to the value for the key (word)
+        let count = map.entry(word).or_insert(0);
+        // Count must be dereferenced 
+        *count += 1;
+    }
+
+    println!("{:?}", map);
 
 }
